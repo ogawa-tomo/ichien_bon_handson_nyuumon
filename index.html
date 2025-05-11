@@ -1,63 +1,119 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>サンプルタイトル</title>
     <!-- Leaflet CSS -->
     <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
     />
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-        crossorigin=""
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
     ></script>
 
     <!-- Leaflet.markercluster -->
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-</head>
-<body>
-    <div id="map" style="height: 80vh;"></div>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+    />
+  </head>
+  <body>
+    <div id="map" style="height: 80vh"></div>
     <script>
-        const map = L.map('map', {
-            center: [36.5, 137.1],
-            zoom: 5,
+      // const map = L.map('map', {
+      //     center: [36.5, 137.1],
+      //     zoom: 5,
+      // });
+      // const backgroundLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      //     maxZoom: 19,
+      //     attribution: '&copy; OpenStreetMap contributors'
+      // });
+
+      const map = L.map("map", {
+        center: [35.35627808, 138.7307908],
+        zoom: 14,
+      });
+      const backgroundLayer = L.tileLayer(
+        "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",
+        {
+          maxZoom: 17,
+          attribution:
+            '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
+        }
+      );
+
+      map.addLayer(backgroundLayer);
+
+      // 円形
+      L.circle([35.3627808, 138.7307908], {
+        color: "yellow",
+        fillColor: "#ff0000",
+        fillOpacity: 0.3,
+        radius: 1000,
+      })
+        .bindPopup("I am Circle!")
+        .addTo(map);
+
+      // 線分
+      L.polyline(
+        [
+          [35.36, 138.73],
+          [35.37, 138.73],
+          [35.37, 138.74],
+          [35.38, 138.74],
+          [35.39, 138.75],
+          [35.37, 138.75],
+        ],
+        { color: "blue" }
+      )
+        .bindPopup("I am Polyline!")
+        .addTo(map);
+
+      L.polygon(
+        [
+          [35.36, 138.7307908],
+          [35.35, 138.74],
+          [35.34, 138.72],
+        ],
+        { color: "green" }
+      )
+        .bindPopup("I am Polygon!")
+        .addTo(map);
+
+      const marker = L.marker([33, 129.5]);
+      marker.bindPopup("平面直角座標1系原点");
+      map.addLayer(marker);
+
+      L.marker([33, 131.0]).bindPopup("平面直角座標2系原点").addTo(map);
+      L.marker([36, 132.166666]).bindPopup("平面直角座標3系原点").addTo(map);
+      L.marker([33, 133.5]).bindPopup("平面直角座標4系原点").addTo(map);
+      L.marker([36, 134.3333333]).bindPopup("平面直角座標5系原点").addTo(map);
+      L.marker([36, 136.0]).bindPopup("平面直角座標6系原点").addTo(map);
+
+      // fetch('./P29-23_10.geojson')
+      //     .then(response => response.json())
+      //     .then(data => {
+      //         L.geoJSON(data).bindPopup(layer => layer.feature.properties.P29_004).addTo(map);
+      //     });
+
+      fetch("./P29-23.geojson")
+        .then((response) => response.json())
+        .then((data) => {
+          const markers = L.markerClusterGroup()
+            .bindPopup((layer) => layer.feature.properties.P29_004)
+            .addTo(map);
+          L.geoJSON(data).addTo(markers);
         });
-        const backgroundLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
-        });
-        map.addLayer(backgroundLayer);
-
-        const marker = L.marker([33, 129.5]);
-        marker.bindPopup('平面直角座標1系原点');
-        map.addLayer(marker)
-
-        L.marker([33, 131.0]).bindPopup('平面直角座標2系原点').addTo(map);
-        L.marker([36, 132.166666]).bindPopup('平面直角座標3系原点').addTo(map);
-        L.marker([33, 133.5]).bindPopup('平面直角座標4系原点').addTo(map);
-        L.marker([36, 134.3333333]).bindPopup('平面直角座標5系原点').addTo(map);
-        L.marker([36, 136.0]).bindPopup('平面直角座標6系原点').addTo(map);
-
-        // fetch('./P29-23_10.geojson')
-        //     .then(response => response.json())
-        //     .then(data => {
-        //         L.geoJSON(data).bindPopup(layer => layer.feature.properties.P29_004).addTo(map);
-        //     });
-        
-        fetch('./P29-23.geojson')
-            .then(response => response.json())
-            .then(data => {
-                const markers = L.markerClusterGroup()
-                    .bindPopup(layer => layer.feature.properties.P29_004)
-                    .addTo(map);
-                L.geoJSON(data).addTo(markers);
-            });
-        
     </script>
-</body>
+  </body>
 </html>
