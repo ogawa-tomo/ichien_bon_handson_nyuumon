@@ -34,25 +34,41 @@
       //     center: [36.5, 137.1],
       //     zoom: 5,
       // });
-      // const backgroundLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      //     maxZoom: 19,
-      //     attribution: '&copy; OpenStreetMap contributors'
-      // });
+      const baseLayers = {
+        OpenStreetMap: L.tileLayer(
+          "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          {
+            maxZoom: 19,
+            attribution: "&copy; OpenStreetMap contributors",
+          }
+        ),
+        地理院地図: L.tileLayer(
+          "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+          {
+            maxZoom: 17,
+            attribution:
+              '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
+          }
+        ),
+        空中写真: L.tileLayer(
+          "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",
+          {
+            maxZoom: 17,
+            attribution:
+              '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
+          }
+        ),
+      };
 
       const map = L.map("map", {
         center: [35.35627808, 138.7307908],
         zoom: 14,
       });
-      const backgroundLayer = L.tileLayer(
-        "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",
-        {
-          maxZoom: 17,
-          attribution:
-            '<a href="https://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
-        }
-      );
+      map.addLayer(baseLayers.OpenStreetMap);
 
-      map.addLayer(backgroundLayer);
+      const layerControl = L.control
+        .layers(baseLayers, [], { collapsed: false })
+        .addTo(map);
 
       // 円形
       L.circle([35.3627808, 138.7307908], {
