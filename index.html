@@ -130,6 +130,28 @@
             .addTo(map);
           L.geoJSON(data).addTo(markers);
         });
+
+      const population = "A16_005";
+      const size = "A16_006";
+      fetch("./did.geojson")
+        .then((res) => res.json())
+        .then((json) => {
+          const polygon = L.geoJSON(json, {
+            style: (feature) => ({
+              color: "red",
+              stroke: false,
+              fillOpacity:
+                feature.properties[population] /
+                feature.properties[size] /
+                20000,
+            }),
+          })
+            .bindPopup(
+              (layer) => "人口: " + layer.feature.properties[population]
+            )
+            .addTo(map);
+          layerControl.addOverlay(polygon, "人口集中地区");
+        });
     </script>
   </body>
 </html>
